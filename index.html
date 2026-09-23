@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>طرب</title></head>
+<body style="background:#0a0a0a;color:#fff;font-family:system-ui;padding:16px">
+<h2>🎵 طرب - خليجي</h2>
+<input id="key" style="width:100%;padding:12px;background:#000;color:#fff;border:1px solid #444;border-radius:10px" placeholder="مفتاح r8_...">
+<textarea id="ly" style="width:100%;padding:12px;background:#000;color:#fff;border:1px solid #444;border-radius:10px;margin-top:10px" rows="3">حبيبي هيمان وينك من زمان</textarea>
+<button onclick="gen()" style="width:100%;background:#d4af37;padding:14px;border:none;border-radius:10px;font-weight:bold;margin-top:10px">ولّد الأغنية</button>
+<pre id="log" style="background:#000;padding:10px;white-space:pre-wrap"></pre>
+<div id="pl"></div>
+<script>
+async function gen(){
+let k=document.getElementById('key').value.trim();
+let ly=document.getElementById('ly').value;
+let log=m=>document.getElementById('log').textContent+=m+"\n";
+log('جاري...');
+let url='https://api.allorigins.win/raw?url='+encodeURIComponent('https://api.replicate.com/v1/predictions');
+let r=await fetch(url,{method:'POST',headers:{'Authorization':'Token '+k,'Content-Type':'application/json'},body:JSON.stringify({version:"671ac645ce5e2fc04366cf95584da59d8433d9c02d2eafaf7b86104f5e7a44e9",input:{prompt:"Arabic khaleeji "+ly,duration:20}})});let d=await r.json();log('ID:'+d.id);
+let id=d.id;
+for(let i=0;i<60;i++){await new Promise(r=>setTimeout(r,3000));
+let poll='https://api.allorigins.win/raw?url='+encodeURIComponent('https://api.replicate.com/v1/predictions/'+id);
+let r2=await fetch(poll,{headers:{'Authorization':'Token '+k}});let d2=await r2.json();log(d2.status);
+if(d2.status=='succeeded'){let o=Array.isArray(d2.output)?d2.output[0]:d2.output;
+document.getElementById('pl').innerHTML=`<audio controls autoplay src="${o}"></audio><br><a href="${o}" style="color:#d4af37">⬇️ تحميل</a>`;return;}}}
+</script>
+</body>
+</html>
